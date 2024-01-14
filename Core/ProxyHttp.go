@@ -234,8 +234,10 @@ func (i *ProxyHttp) handleSslRequest() {
 // 设置请求头
 func (i *ProxyHttp) SetRequest(request *http.Request) *http.Request {
 	request.Header.Set("Connection", "false")
-	request.URL.Host = request.Host
-	request.URL.Scheme = "https"
+	if request.URL != nil {
+		request.URL.Host = request.Host
+		request.URL.Scheme = "https"
+	}
 	return request
 }
 
