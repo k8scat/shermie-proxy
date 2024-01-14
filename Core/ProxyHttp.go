@@ -19,7 +19,6 @@ import (
 
 	"github.com/k8scat/shermie-proxy/Core/Websocket"
 	"github.com/k8scat/shermie-proxy/Log"
-	"github.com/k8scat/shermie-proxy/Utils"
 )
 
 const ConnectSuccess = "HTTP/1.1 200 Connection Established\r\n\r\n"
