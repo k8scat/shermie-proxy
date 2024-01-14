@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/kxg3030/shermie-proxy/Contract"
-	"github.com/kxg3030/shermie-proxy/Log"
-	"github.com/kxg3030/shermie-proxy/Utils"
+	"github.com/k8scat/shermie-proxy/Contract"
+	"github.com/k8scat/shermie-proxy/Log"
+	"github.com/k8scat/shermie-proxy/Utils"
 	"github.com/viki-org/dnscache"
 )
 

@@ -6,7 +6,7 @@ import (
 	"io"
 	"net"
 
-	"github.com/kxg3030/shermie-proxy/Log"
+	"github.com/k8scat/shermie-proxy/Log"
 )
 
 const TcpServer = "server"

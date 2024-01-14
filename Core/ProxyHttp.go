@@ -17,9 +17,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/kxg3030/shermie-proxy/Core/Websocket"
-	"github.com/kxg3030/shermie-proxy/Log"
-	"github.com/kxg3030/shermie-proxy/Utils"
+	"github.com/k8scat/shermie-proxy/Core/Websocket"
+	"github.com/k8scat/shermie-proxy/Log"
+	"github.com/k8scat/shermie-proxy/Utils"
 )
 
 const ConnectSuccess = "HTTP/1.1 200 Connection Established\r\n\r\n"
@@ -239,8 +239,7 @@ func (i *ProxyHttp) SetRequest(request *http.Request) *http.Request {
 	return request
 }
 
-// tls数据接收发送
-func (i *ProxyHttp) SslReceiveSend() {
+func (i *ProxyHttp) tryTls() {
 	var err error
 	certificate, err := Cache.GetCertificate(i.request.Host, i.port)
 	if err != nil {
@@ -265,10 +264,9 @@ func (i *ProxyHttp) SslReceiveSend() {
 		return
 	}
 	_ = sslConn.SetDeadline(time.Now().Add(time.Second * 60))
-	i.conn = sslConn
-	i.tls = true
-	i.reader = bufio.NewReader(i.conn)
-	i.request, err = http.ReadRequest(i.reader)
+
+	reader := bufio.NewReader(sslConn)
+	request, err := http.ReadRequest(reader)
 	if err != nil {
 		if err == io.EOF {
 			Log.Log.Println("浏览器TLS连接断开：" + err.Error())
@@ -277,6 +275,16 @@ func (i *ProxyHttp) SslReceiveSend() {
 		Log.Log.Println("读取TLS连接请求数据失败：" + err.Error())
 		return
 	}
+
+	i.conn = sslConn
+	i.tls = true
+	i.reader = reader
+	i.request = request
+}
+
+// tls数据接收发送
+func (i *ProxyHttp) SslReceiveSend() {
+	i.tryTls()
 
 	if i.request.Header.Get("Upgrade") == "websocket" || i.request.Header.Get("Connection") == "Upgrade" {
 		i.handleWsRequest()

@@ -1,4 +1,4 @@
-module github.com/kxg3030/shermie-proxy
+module github.com/k8scat/shermie-proxy
 
 go 1.16
 
