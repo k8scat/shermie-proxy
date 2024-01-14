@@ -54,7 +54,6 @@ func (i *ProxyHttp) Handle() {
 	i.request = request
 	// 如果是connect方法则是https请求或者ws、wss请求
 	if i.request.Method == http.MethodConnect {
-		i.tls = true
 		i.handleSslRequest()
 		return
 	}
@@ -233,7 +232,9 @@ func (i *ProxyHttp) handleSslRequest() {
 
 // 设置请求头
 func (i *ProxyHttp) SetRequest(request *http.Request) *http.Request {
-	request.Header.Set("Connection", "false")
+	if request.Header != nil {
+		request.Header.Set("Connection", "false")
+	}
 	if request.URL != nil {
 		request.URL.Host = request.Host
 		request.URL.Scheme = "https"
@@ -262,7 +263,8 @@ func (i *ProxyHttp) tryTls() {
 			Log.Log.Println("客户端TLS握手失败：" + err.Error())
 			return
 		}
-		i.handleWsHandshakeErr(Utils.GetLastTimeFrame(sslConn, "rawInput"))
+		// todo: why call handleWsHandshakeErr here?
+		// i.handleWsHandshakeErr(Utils.GetLastTimeFrame(sslConn, "rawInput"))
 		return
 	}
 	_ = sslConn.SetDeadline(time.Now().Add(time.Second * 60))
